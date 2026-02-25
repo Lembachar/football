@@ -51,7 +51,7 @@ def matches():
     data = response.json()
 
     matches = []
-    for game in data["matches"]:
+    for game in data.get("matches", []):
         score = "vs"
         if game["score"]["fullTime"]["home"] is not None:
             score = f'{game["score"]["fullTime"]["home"]} - {game["score"]["fullTime"]["away"]}'
