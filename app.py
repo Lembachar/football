@@ -1,12 +1,14 @@
 from flask import Flask, render_template, request
 from datetime import date
 import requests
+import os
 
+headers = {
+    "X-Auth-Token": os.environ.get("FOOTBALL_API_KEY")
+}
 
 app = Flask(__name__)
-headers = {
-        "X-Auth-Token": "1eaac83f40a6492ea0d128cedf2c55ca"
-    }
+
 
 #interface , main page
 @app.route("/")
