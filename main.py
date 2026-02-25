@@ -48,6 +48,8 @@ def matches():
 
     url = f"https://api.football-data.org/v4/competitions/{league}/matches"
     response = requests.get(url, headers=headers, params=params,timeout=10)
+    print(f"STATUS: {response.status_code}")
+    print(f"RESPONSE: {response.text}")
     data = response.json()
 
     matches = []
