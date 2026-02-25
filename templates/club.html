@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Football</title>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+
+:root {
+  --bg-main: #f6fbf8;
+  --green-main: #1f7a3f;
+  --green-hover: #166534;
+  --text-main: #1f7a3f;
+  --text-muted: #5f7d6b;
+  --border: #cfe8d8;
+  --white: #ffffff;
+}
+.navbar {
+  margin:0px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 24px;
+  background: var(--green-main);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--white);
+}
+
+.navbar a {
+  color: var(--white);
+  text-decoration: none;
+  margin-left: 20px;
+  font-weight: 500;
+  display: inline-block;
+transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.navbar a:hover {
+  color: #fff;
+  transform: scale(1.08) translateY(-2px) ;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+
+
+ .club-hero {
+      height: 260px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      background: linear-gradient(135deg, #1f7a3f, #2fa866);
+      color: white;
+    }
+
+    .club-hero img {
+      width: 120px;
+      height: 120px;
+      margin-bottom: 12px;
+    }
+
+    .section {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 24px;
+      background: rgba(255,255,255,0.85);
+      border-radius: 14px;
+    }
+
+    h2 {
+      color: #1f7a3f;
+      margin-bottom: 12px;
+    }
+
+
+
+.team {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.team a {
+  
+  text-decoration: none !important;
+  border-bottom: none;
+  color: var(--green-main);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.team a:hover {
+  color: #1f7a3a;
+  transform: translateY(-1px);
+}
+.team img {
+  width: 24px;
+  object-fit: contain;
+}
+.team span{
+    color:black;
+    font-decoration: none;
+}
+.match-row {
+  display: grid;
+  grid-template-columns: 1fr 70px 1fr;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  width: 100%;
+}
+.match-row .team {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.match-row .score {
+  text-align: center;
+  font-weight: 700;
+  color: var(--green-main);
+}
+.match-row .team.home {
+  justify-content: flex-start;
+}
+
+.match-row .team.away {
+  justify-content: flex-end;
+}
+</style>
+
+</head>
+<body>
+    <nav class="navbar">
+  <div class="nav-left">
+    <span class="title">Football Project</span>
+  </div>
+
+  <div class="nav-right">
+    <a href="/match">Matches</a>
+    <a href="#">Players</a>
+    <a href="#">Competitions</a>
+    <a href="#">leagues</a>
+    <a href="#">standings</a>
+  </div>
+</nav>
+    
+
+<div class="club-hero">
+  <img src="{{ club.logo }}" alt="">
+  <h1>{{ club.name }}</h1>
+  <p class="club-meta">
+      {{ club.country }} · {{ club.stadium }} · Founded {{ club.founded }}
+    </p>
+</div>
+
+
+  <div class="section">
+    <h2>Last 5 matches</h2>
+    
+
+{% for m in last_matches %}
+  <div class="match-row">
+    <div class="team home">
+        <a href="/club/{{ m.home_id }}" class="team-link">
+      <img src="{{ m.home_logo }}">
+      <span>{{ m.home }}</span>
+      </a>
+    </div>
+
+    <strong class="score">{{ m.score }}</strong>
+
+    <div class="team away">
+        <a href="/club/{{ m.away_id }}" class="team-link">
+      <span>{{ m.away }}</span>
+      <img src="{{ m.away_logo }}">
+      </a>
+
+    </div>
+  </div>
+{% endfor %}
+  </div>
+
+  <div class="section">
+    <h2>Upcoming match</h2>
+  </div>
+
+  <div class="section">
+    <h2>League standing</h2>
+  </div>
+
+  <div class="section">
+    <h2>Players</h2>
+  </div>
+
+</body>
+</html>

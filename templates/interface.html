@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Football</title>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+:root {
+  --bg-main: #f6fbf8;
+  --green-main: #1f7a3f;
+  --green-hover: #166534;
+  --text-main: #1f7a3f;
+  --text-muted: #5f7d6b;
+  --border: #cfe8d8;
+  --white: #ffffff;
+}
+body {
+  background: var(--bg-main);
+  color: var(--text-main);
+}
+
+
+.navbar {
+  margin:0px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 24px;
+  background: var(--green-main);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--white);
+}
+
+.navbar a {
+  color: var(--white);
+  text-decoration: none;
+  margin-left: 20px;
+  font-weight: 500;
+  display: inline-block;
+transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.navbar a:hover {
+  color: #fff;
+  transform: scale(1.08) translateY(-2px) ;
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.btn{
+    background: var(--green-main);
+    color: var(--white);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition:  0.2s ease;
+}
+.btn :hover{
+    background: var(--green-hover);
+    transform: scale(1.03) translateY(-1px);
+}
+
+h1{
+    
+    text-align: center;
+}
+.main{
+  margin-top: 100px;
+  align-items: center;
+  text-align: center;
+}
+table {
+  width: 100%;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-collapse: collapse;
+}
+
+th {
+  background: var(--green-main);
+  color: var(--white);
+}
+
+th, td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+td:nth-child(2) {
+  font-weight: bold;
+}
+
+.team {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.team img {
+  height: 24px;
+  width: 24px;
+  object-fit: contain;
+}
+
+.team.away {
+  justify-content: flex-end;
+}
+
+.score {
+  font-weight: bold;
+  text-align: center;
+}
+
+form {
+  margin-bottom: 20px;
+}
+select, button {
+  padding: 6px 10px;
+  margin-right: 10px;
+}
+
+.team-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.team-link:hover {
+  opacity: 0.85;
+}
+.date{
+    border-radius: 5px;
+backdrop-filter: blur(10px);
+-webkit-backdrop-filter: blur(10px);
+background: var(--border);
+}
+.league{
+border-radius: 5px;
+backdrop-filter: blur(10px);
+-webkit-backdrop-filter: blur(10px);
+background: var(--border);
+}
+</style>
+
+</head>
+<body>
+    <nav class="navbar">
+  <div class="nav-left">
+
+    <span class="logo">Football Project</span>
+  </div>
+
+  <div class="nav-right">
+    <a href="/match">Matches</a>
+    <a href="#">Players</a>
+    <a href="#">Competitions</a>
+    <a href="#">leagues</a>
+    <a href="#">standings</a>
+  </div>
+</nav>
+  <div class="main">
+    <h1>Football matches</h1>
+    <h2>welcome to my football page</h2>
+    <h3>where all football data is presented</h3>
+  </div>
+    
+</body>
+</html>
