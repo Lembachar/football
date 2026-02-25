@@ -15,16 +15,17 @@ def interface():
 
 
 #matches page
+# --- DELETE THE GLOBAL HEADERS VARIABLE AT THE TOP ---
+
 @app.route("/match")
 def matches():
-    
+    # Fetch key inside the function to ensure Railway has loaded it
+    api_key = os.environ.get("FOOTBALL_API_KEY")
+    current_headers = {"X-Auth-Token": api_key}
 
     league = request.args.get("league", "PL")
     status = request.args.get("status")
     selected_date = request.args.get("date")
-    club=request.args.get("club")
-
-    
 
     if selected_date:
         date_from = selected_date
@@ -34,23 +35,19 @@ def matches():
         date_from = today
         date_to = today
 
-    params = {
-        "dateFrom": date_from,
-        "dateTo": date_to,
-    }
-
+    params = {"dateFrom": date_from, "dateTo": date_to}
     if status:
         params["status"] = status
 
-    
-    headers = {
-    "X-Auth-Token": os.environ.get("FOOTBALL_API_KEY")
-    }
     url = f"https://api.football-data.org/v4/competitions/{league}/matches"
-    response = requests.get(url, headers=headers, params=params,timeout=10)
-    print(f"STATUS: {response.status_code}")
-    print(f"RESPONSE: {response.text}")
+    
+    # Use current_headers here
+    response = requests.get(url, headers=current_headers, params=params, timeout=10)
     data = response.json()
+
+    # DEBUG: This will show the actual API error in Railway "Application Logs"
+    if response.status_code != 200:
+        print(f"MATCH API ERROR: {data}")
 
     matches = []
     for game in data.get("matches", []):
@@ -60,14 +57,12 @@ def matches():
 
         matches.append({
              "home": game["homeTeam"]["name"],
-                "home_id": game["homeTeam"]["id"],
-                "home_logo": game["homeTeam"].get("crest"),
-
-                "away": game["awayTeam"]["name"],
-                "away_id": game["awayTeam"]["id"],
-                "away_logo": game["awayTeam"].get("crest"),
-
-                "score": score
+             "home_id": game["homeTeam"]["id"],
+             "home_logo": game["homeTeam"].get("crest"),
+             "away": game["awayTeam"]["name"],
+             "away_id": game["awayTeam"]["id"],
+             "away_logo": game["awayTeam"].get("crest"),
+             "score": score
         })
         
     return render_template("match.html", matches=matches)
