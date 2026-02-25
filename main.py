@@ -3,9 +3,7 @@ from datetime import date
 import requests
 import os
 
-headers = {
-    "X-Auth-Token": os.environ.get("FOOTBALL_API_KEY")
-}
+
 
 app = Flask(__name__)
 
@@ -45,7 +43,9 @@ def matches():
         params["status"] = status
 
     
-
+    headers = {
+    "X-Auth-Token": os.environ.get("FOOTBALL_API_KEY")
+    }
     url = f"https://api.football-data.org/v4/competitions/{league}/matches"
     response = requests.get(url, headers=headers, params=params,timeout=10)
     print(f"STATUS: {response.status_code}")
@@ -94,7 +94,9 @@ def club(team_id):
     "limit": 20,
     "status": "FINISHED"
     }
-
+    headers = {
+    "X-Auth-Token": os.environ.get("FOOTBALL_API_KEY")
+    }
     mres = requests.get(matches_url, headers=headers, params=params)
     mdata = mres.json()
 
@@ -124,7 +126,9 @@ def club(team_id):
 def standings():
     league = request.args.get("league", "PL")
     url = f"https://api.football-data.org/v4/competitions/{league}/standings"
-    
+    headers = {
+    "X-Auth-Token": os.environ.get("FOOTBALL_API_KEY")
+    }
     response = requests.get(url, headers=headers)
     data = response.json()
 
