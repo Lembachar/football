@@ -71,7 +71,7 @@ def matches():
 @app.route("/club/<int:team_id>")
 def club(team_id):
     api_key = os.environ.get("FOOTBALL_API_KEY")
-    current_headers = {"X-Auth-Token": api_key}
+    headers = {"X-Auth-Token": api_key}
     url = f"https://api.football-data.org/v4/teams/{team_id}"
     res = requests.get(url, headers=headers)
     data = res.json()
