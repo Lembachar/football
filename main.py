@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 from datetime import date
+from openai import api_key
 import requests
 import os
 
@@ -20,8 +21,11 @@ def interface():
 @app.route("/match")
 def matches():
     # Fetch key inside the function to ensure Railway has loaded it
-    api_key = "1eaac83f40a6492ea0d128cedf2c55ca"
-    current_headers = {"X-Auth-Token": api_key}
+    api_key = os.environ.get("FOOTBALL_API_KEY")
+    if not api_key:
+        raise RuntimeError("FOOTBALL_API_KEY not set")
+    headers = {"X-Auth-Token": api_key}
+    
 
     league = request.args.get("league", "PL")
     status = request.args.get("status")
@@ -42,7 +46,7 @@ def matches():
     url = f"https://api.football-data.org/v4/competitions/{league}/matches"
     
     # Use current_headers here
-    response = requests.get(url, headers=current_headers, params=params, timeout=10)
+    response = requests.get(url, headers=headers, params=params, timeout=10)
     data = response.json()
 
     # DEBUG: This will show the actual API error in Railway "Application Logs"
@@ -70,7 +74,10 @@ def matches():
 #club -----------------------------------------------------------------
 @app.route("/club/<int:team_id>")
 def club(team_id):
-    headers = {"X-Auth-Token": "1eaac83f40a6492ea0d128cedf2c55ca"}
+    api_key = os.environ.get("FOOTBALL_API_KEY")
+    if not api_key:
+        raise RuntimeError("FOOTBALL_API_KEY not set")
+    headers = {"X-Auth-Token": api_key}
 
     # --- defaults (guaranteed) ---
     club = {}
@@ -150,7 +157,10 @@ def club(team_id):
 def standings():
     league = request.args.get("league", "PL")
     url = f"https://api.football-data.org/v4/competitions/{league}/standings"
-    headers = {"X-Auth-Token": "1eaac83f40a6492ea0d128cedf2c55ca"}
+    api_key = os.environ.get("FOOTBALL_API_KEY")
+    if not api_key:
+        raise RuntimeError("FOOTBALL_API_KEY not set")
+    headers = {"X-Auth-Token": api_key}
 
     response = requests.get(url, headers=headers)
     data = response.json()
@@ -160,9 +170,7 @@ def standings():
     if "standings" in data and len(data["standings"]) > 0:
         for entry in data["standings"][0]["table"]:
 
-            # ---- FORM (INLINE, PER TEAM) ----
             
-            # --------------------------------
 
             standings_data.append({
                 "position": entry["position"],
