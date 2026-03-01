@@ -16,9 +16,24 @@
   --white: #ffffff;
 }
 body {
-  background: var(--bg-main);
+  /*background: var(--bg-main);*/
   color: var(--text-main);
+  
+  margin: 0;
+  min-height: 100vh;
+
+  background:
+    /*linear-gradient(
+      rgba(0,0,0,0.55),
+      rgba(0,0,0,0.55)
+    ),*/
+    url("/static/stadium.jpg");
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
+
 
 
 .navbar {
@@ -31,6 +46,9 @@ body {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   color: var(--white);
+  
+  gap: 15px;
+
 }
 
 .navbar a {
@@ -73,6 +91,10 @@ h1{
   margin-top: 100px;
   align-items: center;
   text-align: center;
+  
+}
+.main h1, .main h2, .main h3{
+  color: var(--white);
 }
 table {
   width: 100%;
@@ -145,16 +167,31 @@ backdrop-filter: blur(10px);
 -webkit-backdrop-filter: blur(10px);
 background: var(--border);
 }
+
+.nav-search input {
+  padding: 8px 15px;
+  border-radius: 20px;
+  border: none;
+  width: 200px;
+  outline: none;
+  font-size: 14px;
+}
+
+
+
 </style>
 
 </head>
 <body>
+  
     <nav class="navbar">
   <div class="nav-left">
 
-    <span class="logo">Football Project</span>
+    <span class="logo"><a href="/interface">Football Project</a></span>
   </div>
-
+  <div class="nav-search">
+    
+  </div>
   <div class="nav-right">
     <a href="/match">Matches</a>
     <a href="#">Players</a>
@@ -164,10 +201,17 @@ background: var(--border);
   </div>
 </nav>
   <div class="main">
+    
     <h1>Football matches</h1>
     <h2>welcome to my football page</h2>
     <h3>where all football data is presented</h3>
   </div>
     
+
+<script>
+  
+
+
+</script>
 </body>
 </html>

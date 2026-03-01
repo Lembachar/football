@@ -20,7 +20,7 @@ def interface():
 @app.route("/match")
 def matches():
     # Fetch key inside the function to ensure Railway has loaded it
-    api_key = os.environ.get("FOOTBALL_API_KEY")
+    api_key = "1eaac83f40a6492ea0d128cedf2c55ca"
     current_headers = {"X-Auth-Token": api_key}
 
     league = request.args.get("league", "PL")
@@ -67,89 +67,127 @@ def matches():
         
     return render_template("match.html", matches=matches)
 
-
+#club -----------------------------------------------------------------
 @app.route("/club/<int:team_id>")
 def club(team_id):
-    api_key = os.environ.get("FOOTBALL_API_KEY")
-    headers = {"X-Auth-Token": api_key}
-    url = f"https://api.football-data.org/v4/teams/{team_id}"
-    res = requests.get(url, headers=headers)
-    data = res.json()
+    headers = {"X-Auth-Token": "1eaac83f40a6492ea0d128cedf2c55ca"}
 
-    club = {
-        "id": data["id"],
-        "name": data["name"],
-        "logo": data["crest"],
-        "stadium": data["venue"],
-        "founded": data["founded"],
-        "country": data["area"]["name"]
-    }
-
-    # Last 5 matches
-    matches_url = f"https://api.football-data.org/v4/teams/{team_id}/matches"
-    params = {
-    "limit": 20,
-    "status": "FINISHED"
-    }
-    headers = {
-    "X-Auth-Token": os.environ.get("FOOTBALL_API_KEY")
-    }
-    mres = requests.get(matches_url, headers=headers, params=params)
-    mdata = mres.json()
-
+    # --- defaults (guaranteed) ---
+    club = {}
+    all_matches = []
     last_matches = []
+    upcoming = None
+    standing = None
 
-    for m in mdata.get("matches", []):
-        score = f'{m["score"]["fullTime"]["home"]} - {m["score"]["fullTime"]["away"]}'
+    # --- club info ---
+    res = requests.get(f"https://api.football-data.org/v4/teams/{team_id}", headers=headers)
+    if res.status_code != 200:
+        return "Team not found", 404
 
+    data = res.json()
+    club = {
+        "id": data.get("id"),
+        "name": data.get("name"),
+        "logo": data.get("crest"),
+        "stadium": data.get("venue"),
+        "founded": data.get("founded"),
+        "country": data.get("area", {}).get("name"),
+        "running_competitions": data.get("runningCompetitions", [])
+    }
+
+    # --- matches ---
+    mres = requests.get(f"https://api.football-data.org/v4/teams/{team_id}/matches", headers=headers)
+    if mres.status_code == 200:
+        try:
+            all_matches = mres.json().get("matches", [])
+        except ValueError:
+            all_matches = []
+
+    finished = [m for m in all_matches if isinstance(m, dict) and m.get("status") == "FINISHED"]
+    for m in finished[-5:][::-1]:
         last_matches.append({
-            "home": m["homeTeam"]["name"],
-            "home_id": m["homeTeam"]["id"],
-            "home_logo": m["homeTeam"].get("crest"),
-
-            "away": m["awayTeam"]["name"],
-            "away_id": m["awayTeam"]["id"],
-            "away_logo": m["awayTeam"].get("crest"),
-
-            "score": score
+            "home": m.get("homeTeam", {}).get("name"),
+            "home_id": m.get("homeTeam", {}).get("id"),
+            "home_logo": m.get("homeTeam", {}).get("crest"),
+            "away": m.get("awayTeam", {}).get("name"),
+            "away_id": m.get("awayTeam", {}).get("id"),
+            "away_logo": m.get("awayTeam", {}).get("crest"),
+            "score": f'{m.get("score", {}).get("fullTime", {}).get("home", "?")} - {m.get("score", {}).get("fullTime", {}).get("away", "?")}'
         })
 
-    last_matches = last_matches[-5:][::-1]
+    scheduled = [m for m in all_matches if isinstance(m, dict) and m.get("status") in ["SCHEDULED", "TIMED"]]
+    if scheduled:
+        m = scheduled[0]
+        upcoming = {
+            "home": m.get("homeTeam", {}).get("name"),
+            "home_logo": m.get("homeTeam", {}).get("crest"),
+            "away": m.get("awayTeam", {}).get("name"),
+            "away_logo": m.get("awayTeam", {}).get("crest"),
+            "date": m.get("utcDate", "").split("T")[0]
+        }
 
-    return render_template("club.html", club=club, last_matches=last_matches)
+    # --- standings ---
+    if club["running_competitions"]:
+        code = club["running_competitions"][0].get("code")
+        if code:
+            sres = requests.get(f"https://api.football-data.org/v4/competitions/{code}/standings", headers=headers)
+            if sres.status_code == 200:
+                for table in sres.json().get("standings", []):
+                    for row in table.get("table", []):
+                        if row.get("team", {}).get("id") == team_id:
+                            standing = row
+                            break
 
-
+    return render_template(
+        "club.html",
+        club=club,
+        last_matches=last_matches,
+        upcoming=upcoming,
+        standing=standing
+    )
+#standings ------------------------------------------------------------
 @app.route("/standings")
 def standings():
     league = request.args.get("league", "PL")
     url = f"https://api.football-data.org/v4/competitions/{league}/standings"
-    headers = {
-    "X-Auth-Token": os.environ.get("FOOTBALL_API_KEY")
-    }
+    headers = {"X-Auth-Token": "1eaac83f40a6492ea0d128cedf2c55ca"}
+
     response = requests.get(url, headers=headers)
     data = response.json()
 
     standings_data = []
-    
-   
+
     if "standings" in data and len(data["standings"]) > 0:
         for entry in data["standings"][0]["table"]:
+
+            # ---- FORM (INLINE, PER TEAM) ----
+            
+            # --------------------------------
+
             standings_data.append({
                 "position": entry["position"],
                 "team_name": entry["team"]["name"],
-                "team_logo": entry["team"]["crest"],
                 "team_id": entry["team"]["id"],
+                "club": {
+                    "logo": entry["team"]["crest"]
+                },
                 "played": entry["playedGames"],
                 "wins": entry["won"],
                 "draws": entry["draw"],
                 "losses": entry["lost"],
                 "points": entry["points"]
+                
             })
-            
-    return render_template("standings.html", standings=standings_data, selected_league=league)
+
+    return render_template(
+        "standings.html",
+        standings=standings_data,
+        selected_league=league,
+        club={}
+    )
 
     
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=port, debug=True)

@@ -138,7 +138,7 @@ transition: transform 0.2s ease, opacity 0.2s ease;
 <body>
     <nav class="navbar">
   <div class="nav-left">
-    <span class="title">Football Project</span>
+    <span class="logo"><a href="/interface">Football Project</a></span>
   </div>
 
   <div class="nav-right">
@@ -188,15 +188,39 @@ transition: transform 0.2s ease, opacity 0.2s ease;
 
   <div class="section">
     <h2>Upcoming match</h2>
+    {% if upcoming %}
+    <div class="match-row">
+      <div class="team home">
+        <img src="{{ upcoming.home_logo }}">
+        <span>{{ upcoming.home }}</span>
+      </div>
+      <strong class="score">{{ upcoming.date }}</strong>
+      <div class="team away">
+        <span>{{ upcoming.away }}</span>
+        <img src="{{ upcoming.away_logo }}">
+      </div>
+    </div>
+    {% else %}
+    <p>No upcoming matches scheduled.</p>
+    {% endif %}
   </div>
 
   <div class="section">
     <h2>League standing</h2>
+    {% if standing %}
+    <div style="background: var(--white); padding: 15px; border-radius: 8px; border: 1px solid var(--border);">
+        <p>Current Position: <strong style="color: var(--green-main); font-size: 1.2em;">#{{ standing.position }}</strong></p>
+        <p>Points: <strong>{{ standing.points }}</strong> ({{ standing.won }}W - {{ standing.draw }}D - {{ standing.lost }}L)</p>
+        <p style="font-size: 0.9em; color: var(--text-muted);">Played: {{ standing.playedGames }} | Goal Diff: {{ standing.goalDifference }}</p>
+    </div>
+    {% else %}
+    <p>Standing data not available.</p>
+    {% endif %}
   </div>
 
   <div class="section">
     <h2>Players</h2>
-  </div>
+    </div>
 
 </body>
 </html>

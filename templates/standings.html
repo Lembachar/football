@@ -306,15 +306,16 @@ form {
     color: white;
     background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
 }
+
 </style>
 
 </head>
 <body>
     <nav class="navbar">
   <div class="nav-left">
-    <span class="logo">Football Project</span>
+    <span class="logo"><a href="/interface">Football Project</a></span>
   </div>
-
+  
   <div class="nav-right">
     <a href="/match">Matches</a>
     <a href="#">Players</a>
@@ -353,6 +354,7 @@ form {
                 <th>L</th>
                 <th>PTS</th>
                 
+                
             </tr>
         </thead>
         <tbody>
@@ -360,7 +362,8 @@ form {
             <tr>
                 <td>{{ team.position }}</td>
                 <td class="team-cell">
-                    <img src="{{ team.team_logo }}" class="logo-sm">
+                    
+                   <img src="{{ team.club.logo }}" class="logo-sm">
                     <a href="/club/{{ team.team_id }}">{{ team.team_name }}</a>
                 </td>
                 <td>{{ team.played }}</td>
