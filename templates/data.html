@@ -115,18 +115,37 @@ h2 {
   border-bottom: 1px solid var(--border);
   font-size: 0.9rem;
 }
+
+
+
+.png{
+  filter: brightness(0) invert(1);
+  height:40px;
+  width:40px;
+}
+.logo a{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  text-decoration:none;
+}
+
+.logo img{
+  width:40px;   
+  height:auto;
+}
 </style>
 </head>
 <body>
 
 <nav class="navbar">
   <div class="nav-left">
-    <span class="logo"><a href="/">Football Project</a></span>
+    <span class="logo"><a href="/"><img src="/static/logo2-Photoroom.png" alt="Logo" class="png">Football Project</a></span>
   </div>
   <div class="nav-right">
-    <a href="/leagues">leagues</a>
-    <a href="#">Players</a>
-    <a href="#">Competitions</a>
+    
+    <a href="/players">Players</a>
+    <a href="/competitions">Competitions</a>
     <a href="/match">matches</a>
     <a href="/standings">standings</a>
   </div>

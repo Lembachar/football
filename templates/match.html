@@ -1,252 +1,333 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Football</title>
-    <meta charset="UTF-8">
+  <title>Matches – Football Data</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-:root {
-  --bg-main: #f6fbf8;
-  --green-main: #1f7a3f;
-  --green-hover: #166534;
-  --text-main: #1f7a3f;
-  --text-muted: #5f7d6b;
-  --border: #cfe8d8;
-  --white: #ffffff;
-}
-body {
-  background: var(--bg-main);
-  color: var(--text-main);
-}
+    :root {
+      --green: #1f7a3f;
+      --green-dark: #155c2e;
+      --green-light: #e8f5ee;
+      --border: #d8eae0;
+      --white: #ffffff;
+      --off-white: #f7fbf8;
+      --text: #111;
+      --muted: #6b8c78;
+    }
 
+    body {
+      font-family: 'Barlow', sans-serif;
+      background: var(--off-white);
+      color: var(--text);
+      min-height: 100vh;
+    }
 
-.navbar {
-  margin:0px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 14px 24px;
-  background: var(--green-main);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  color: var(--white);
-}
+    /* ── NAVBAR ── */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 40px;
+      background: var(--green);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .nav-logo img {
+      height: 34px;
+      width: auto;
+      filter: brightness(0) invert(1);
+    }
+    .nav-logo span {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.3rem;
+      letter-spacing: 2px;
+      color: white;
+    }
+    .nav-links a {
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+      margin-left: 28px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: white; }
 
-.navbar a {
-  color: var(--white);
-  text-decoration: none;
-  margin-left: 20px;
-  font-weight: 500;
-  display: inline-block;
-transition: transform 0.2s ease, opacity 0.2s ease;
-}
+    /* ── PAGE HEADER ── */
+    .page-header {
+      background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+      padding: 40px 40px 36px;
+      position: relative;
+      overflow: hidden;
+    }
+    .page-header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+    .page-header-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .page-header h1 {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 3rem;
+      letter-spacing: 3px;
+      color: white;
+      line-height: 1;
+    }
+    .page-header p {
+      color: rgba(255,255,255,0.6);
+      font-size: 0.85rem;
+      margin-top: 4px;
+    }
 
-.navbar a:hover {
-  color: #fff;
-  transform: scale(1.08) translateY(-2px) ;
-}
+    /* ── DATE PICKER FORM ── */
+    .date-form {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .date-input {
+      padding: 9px 16px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.12);
+      color: white;
+      font-family: 'Barlow', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 500;
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .date-input:focus {
+      border-color: rgba(255,255,255,0.6);
+      background: rgba(255,255,255,0.18);
+    }
+    .date-input::-webkit-calendar-picker-indicator {
+      filter: invert(1);
+      opacity: 0.7;
+      cursor: pointer;
+    }
+    .btn-show {
+      padding: 9px 22px;
+      background: white;
+      color: var(--green-dark);
+      border: none;
+      border-radius: 8px;
+      font-family: 'Barlow', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-show:hover {
+      background: var(--green-light);
+      transform: translateY(-1px);
+    }
 
-.logo {
-  font-size: 18px;
-  font-weight: bold;
-}
+    /* ── CONTENT ── */
+    .content {
+      max-width: 900px;
+      margin: 36px auto 60px;
+      padding: 0 24px;
+    }
 
-.btn {
-  padding: 10px 18px;
-  border-radius: 10px;
-  border: none;
-  background: var(--green-main);
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.15s ease,
-              box-shadow 0.15s ease,
-              background 0.15s ease;
-}
+    /* ── COMPETITION GROUP ── */
+    .competition-group {
+      margin-bottom: 28px;
+    }
+    .competition-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .competition-title span {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+      color: var(--green);
+    }
+    .competition-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
 
-.btn:hover {
-  background: var(--green-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 14px rgba(0,0,0,0.12);
-}
+    /* ── MATCH CARD ── */
+    .match-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 6px;
+      display: grid;
+      grid-template-columns: 1fr 90px 1fr;
+      align-items: center;
+      padding: 14px 20px;
+      transition: box-shadow 0.18s, transform 0.18s;
+    }
+    .match-card:hover {
+      box-shadow: 0 4px 16px rgba(31,122,63,0.1);
+      transform: translateY(-1px);
+    }
+    .match-team {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .match-team img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+    .match-team .name {
+      font-weight: 600;
+      font-size: 0.92rem;
+    }
+    .match-team.away {
+      justify-content: flex-end;
+      text-align: right;
+    }
+    .match-team.away .name {
+      order: 1;
+    }
+    .match-team.away img {
+      order: 2;
+    }
+    .match-team:hover .name { color: var(--green); }
 
-.btn:active {
-  transform: translateY(0);
-  box-shadow: none;
-}
+    .match-score {
+      text-align: center;
+    }
+    .score-box {
+      display: inline-block;
+      padding: 5px 14px;
+      background: var(--green-light);
+      border-radius: 6px;
+      font-weight: 800;
+      font-size: 1rem;
+      color: var(--green-dark);
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .score-box:hover {
+      background: #c5dfd0;
+    }
+    .score-box.upcoming {
+      background: #f0f4f1;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
 
-h1{
-    
-    text-align: center;
-}
-
-table {
-  width: 100%;
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-collapse: collapse;
-}
-
-th {
-  background: var(--green-main);
-  color: var(--white);
-}
-
-th, td {
-  padding: 12px;
-  text-align: center;
-  border-bottom: 1px solid #ddd;
-}
-
-td:nth-child(2) {
-  font-weight: bold;
-}
-
-.team {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.team img {
-  height: 24px;
-  width: 24px;
-  object-fit: contain;
-}
-
-.team.away {
-  justify-content: flex-end;
-}
-
-.score {
-  font-weight: bold;
-  text-align: center;
-}
-
-form {
-  margin-bottom: 20px;
-}
-select, button {
-  padding: 6px 10px;
-  margin-right: 10px;
-}
-
-.team-link {
-  text-decoration: none;
-  color: inherit;
-}
-
-.team-link:hover {
-  opacity: 0.85;
-}
-form {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  margin: 24px 0;
- 
-  justify-content: center;
-
-}
-.league {
-  background-image: url("data:image/svg+xml;utf8,<svg fill='%231f7a3f' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  background-size: 18px;
-}
-.date::-webkit-calendar-picker-indicator {
-  cursor: pointer;
-  opacity: 0.7;
-}
-
-.date::-webkit-calendar-picker-indicator:hover {
-  opacity: 1;
-}
-.date:focus,
-.league:focus {
-  outline: none;
-  border-color: var(--green-main);
-  box-shadow: 0 0 0 2px rgba(31,122,63,0.15);
-}
-.date,
-.league {
-   
-  padding: 10px 14px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  background: white;
-  color: var(--text-main);
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.date:focus,
-.league:focus {
-  outline: none;
-  border-color: var(--green-main);
-}
-</style>
-
+    /* ── EMPTY ── */
+    .empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+      background: var(--white);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    .empty-icon { font-size: 2.5rem; margin-bottom: 12px; }
+    .empty p { font-size: 0.95rem; }
+  </style>
 </head>
 <body>
-    <nav class="navbar">
-  <div class="nav-left">
-    <span class="logo"><a href="/">Football Project</a></span>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a href="/" class="nav-logo">
+      <img src="/static/logo2-Photoroom.png" alt="Logo">
+      <span>Football Data</span>
+    </a>
+    <div class="nav-links">
+      
+      <a href="/players">Players</a>
+      <a href="/competitions">Competitions</a>
+      <a href="/match">Matches</a>
+      <a href="/standings">Standings</a>
+    </div>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div class="page-header-inner">
+      <div>
+        <h1>Matches</h1>
+        <p>{{ selected_date if selected_date else 'Today' }} · All competitions</p>
+      </div>
+      <form method="get" action="/match" class="date-form">
+        <input type="date" name="date" class="date-input" value="{{ selected_date or '' }}">
+        <button type="submit" class="btn-show">Show</button>
+      </form>
+    </div>
   </div>
 
-  <div class="nav-right">
-    <a href="/leagues">leagues</a>
-    <a href="#">Players</a>
-    <a href="#">Competitions</a>
-    <a href="/matches">matches</a>
-    <a href="/standings">standings</a>
+  <!-- MATCHES -->
+  <div class="content">
+    {% if grouped_matches %}
+      {% for competition, matches in grouped_matches.items() %}
+      <div class="competition-group">
+        <div class="competition-title">
+          <span>{{ competition }}</span>
+        </div>
+        {% for match in matches %}
+        <div class="match-card">
+          <a href="/club/{{ match.home_id }}" class="match-team">
+            <img src="{{ match.home_logo }}" alt="" onerror="this.style.display='none'">
+            <span class="name">{{ match.home }}</span>
+          </a>
+
+          <div class="match-score">
+            {% if match.score != 'vs' %}
+              <a href="/match/{{ match.id }}" class="score-box">{{ match.score }}</a>
+            {% else %}
+              <span class="score-box upcoming">vs</span>
+            {% endif %}
+          </div>
+
+          <a href="/club/{{ match.away_id }}" class="match-team away">
+            <img src="{{ match.away_logo }}" alt="" onerror="this.style.display='none'">
+            <span class="name">{{ match.away }}</span>
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty">
+        <div class="empty-icon">📭</div>
+        <p>No matches found for this date.</p>
+      </div>
+    {% endif %}
   </div>
-</nav>
-    <h1>Football matches</h1>
-    <form method="get" action="/match">
-    <input type="date" name="date" class="date">
-  
 
-  
-
-  <button type="submit" class="btn">Show matches</button>
-
-</form>
-    <table>
-  <tr>
-    <th>Home</th>
-    <th>Score</th>
-    <th>Away</th>
-  </tr>
-
-  {% for competition, matches in grouped_matches.items() %}
-  <tr><td colspan="3"><strong>{{ competition }}</strong></td></tr>
-  {% for match in matches %}
-  <tr>
-    <td>
-    <a href="/club/{{ match.home_id }}" class="team-link">
-      <div class="team">
-        <img src="{{ match.home_logo }}" alt="">
-        <span>{{ match.home }}</span>
-      </div>
-    </a>
-    </td>
-    
-    <td class="score"><a href="/match/{{ match.id }}" style="color: var(--green-main); text-decoration: none;">{{ match.score }}</a></td>
-
-    <td>
-    <a href="/club/{{ match.away_id }}" class="team-link">
-      <div class="team away">
-        <span>{{ match.away }}</span>
-        <img src="{{ match.away_logo }}" alt="" onerror="this.style.display='none'">
-      </div>
-    </a>
-    </td>
-  </tr>
-    {% endfor %}
-  {% endfor %}
-</table>
-    
 </body>
 </html>
