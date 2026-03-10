@@ -23,10 +23,10 @@ body {
   min-height: 100vh;
 
   background:
-    /*linear-gradient(
-      rgba(0,0,0,0.55),
-      rgba(0,0,0,0.55)
-    ),*/
+    linear-gradient(
+      rgba(0,0,0,0.25),
+      rgba(0,0,0,0.25)
+    ),
     url("/static/stadium.jpg");
 
   background-size: cover;
@@ -88,13 +88,29 @@ h1{
     text-align: center;
 }
 .main{
-  margin-top: 100px;
+  margin-top: 50px;
   align-items: center;
   text-align: center;
   
 }
-.main h1, .main h2, .main h3{
-  color: var(--white);
+.main h1 {
+  font-size: 5rem;           
+  font-weight: 800;
+  letter-spacing: -2px;     
+  margin: 10px 0;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.main h2 {
+  
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: var(--text-main); /* Slightly transparent so it's secondary */
+  max-width: 600px;         /* Prevents the text from stretching too wide */
+  margin: 0 auto;
+  line-height: 1.6;
+
 }
 table {
   width: 100%;
@@ -177,7 +193,22 @@ background: var(--border);
   font-size: 14px;
 }
 
+.png{
+  filter: brightness(0) invert(1);
+  height:40px;
+  width:40px;
+}
+.logo a{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  text-decoration:none;
+}
 
+.logo img{
+  width:40px;   /* adjust size */
+  height:auto;
+}
 
 </style>
 
@@ -186,25 +217,25 @@ background: var(--border);
   
     <nav class="navbar">
   <div class="nav-left">
-
-    <span class="logo"><a href="/">Football Project</a></span>
+<span class="logo"><a href="/"><img src="/static/logo2-Photoroom.png" alt="Logo" class="png">Football Project</a></span>
+    
   </div>
   <div class="nav-search">
     
   </div>
   <div class="nav-right">
-    <a href="/match">Matches</a>
-    <a href="#">Players</a>
+    <a href="/leagues">leagues</a>
+    <a href="/players">Players</a>
     <a href="#">Competitions</a>
-    <a href="#">leagues</a>
+    <a href="/match">matches</a>
     <a href="/standings">standings</a>
   </div>
 </nav>
   <div class="main">
-    
+    <p class="subtitle">LIVE DATA • 5 LEAGUES • REAL-TIME</p>
     <h1>Football matches</h1>
-    <h2>welcome to my football page</h2>
-    <h3>where all football data is presented</h3>
+    <h2>Your ultimate destination for every goal, standing, and squad</h2>
+    
   </div>
     
 

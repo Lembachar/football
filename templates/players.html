@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Football</title>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+:root {
+  --bg-main: #f6fbf8;
+  --green-main: #1f7a3f;
+  --green-hover: #166534;
+  --text-main: #1f7a3f;
+  --text-muted: #5f7d6b;
+  --border: #cfe8d8;
+  --white: #ffffff;
+}
+body {
+  /*background: var(--bg-main);*/
+  color: var(--text-main);
+  
+  margin: 0;
+  min-height: 100vh;
+
+  background:
+    linear-gradient(
+      rgba(0,0,0,0.25),
+      rgba(0,0,0,0.25)
+    ),
+   
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+
+
+.navbar {
+  margin:0px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 24px;
+  background: var(--green-main);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--white);
+  
+  gap: 15px;
+
+}
+
+.navbar a {
+  color: var(--white);
+  text-decoration: none;
+  margin-left: 20px;
+  font-weight: 500;
+  display: inline-block;
+transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.navbar a:hover {
+  color: #fff;
+  transform: scale(1.08) translateY(-2px) ;
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.btn{
+    background: var(--green-main);
+    color: var(--white);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition:  0.2s ease;
+}
+.btn :hover{
+    background: var(--green-hover);
+    transform: scale(1.03) translateY(-1px);
+}
+
+h1{
+    
+    text-align: center;
+}
+.main{
+  margin-top: 50px;
+  align-items: center;
+  text-align: center;
+  
+}
+.main h1 {
+  font-size: 5rem;           
+  font-weight: 800;
+  letter-spacing: -2px;     
+  margin: 10px 0;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.main h2 {
+  
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: var(--text-main); /* Slightly transparent so it's secondary */
+  max-width: 600px;         /* Prevents the text from stretching too wide */
+  margin: 0 auto;
+  line-height: 1.6;
+
+}
+table {
+  width: 100%;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-collapse: collapse;
+}
+
+th {
+  background: var(--green-main);
+  color: var(--white);
+}
+
+th, td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+td:nth-child(2) {
+  font-weight: bold;
+}
+
+.team {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.team img {
+  height: 24px;
+  width: 24px;
+  object-fit: contain;
+}
+
+.team.away {
+  justify-content: flex-end;
+}
+
+.score {
+  font-weight: bold;
+  text-align: center;
+}
+
+form {
+  margin-bottom: 20px;
+}
+select, button {
+  padding: 6px 10px;
+  margin-right: 10px;
+}
+
+.team-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.team-link:hover {
+  opacity: 0.85;
+}
+.date{
+    border-radius: 5px;
+backdrop-filter: blur(10px);
+-webkit-backdrop-filter: blur(10px);
+background: var(--border);
+}
+
+
+.nav-search input {
+  padding: 8px 15px;
+  border-radius: 20px;
+  border: none;
+  width: 200px;
+  outline: none;
+  font-size: 14px;
+}
+
+.png{
+  filter: brightness(0) invert(1);
+  height:40px;
+  width:40px;
+}
+.logo a{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  text-decoration:none;
+}
+
+.logo img{
+  width:40px;   /* adjust size */
+  height:auto;
+}
+
+
+.search-box {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.search-box {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  max-width: 700px;
+  margin: 20px auto 0;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+.search-box input {
+  padding: 12px 20px;
+  flex: 1;
+  min-width: 0;
+  border: 2px solid var(--border);
+  border-radius: 100px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.search-box input:focus { border-color: var(--green-main); }
+
+.search-box button {
+  padding: 12px 28px;
+  background: var(--green-main);
+  color: var(--white);
+  border: none;
+  border-radius: 100px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.search-box button:hover {
+  background: var(--green-hover);
+  transform: translateY(-1px);
+}
+
+
+.results {
+  max-width: 1000px;
+  margin: 30px auto;
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+.player-card {
+  background: white;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.player-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+.player-card-header {
+  background: linear-gradient(135deg, #1f7a3f, #2fa866);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.player-card-header img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(255,255,255,0.4);
+  background: #fff;
+}
+.player-card-header .info .name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: white;
+}
+.player-card-header .info .team {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.8);
+  margin-top: 3px;
+}
+.player-card-body { padding: 16px; }
+.section-title {
+  font-weight: 700;
+  color: var(--green-main);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 14px 0 6px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 4px;
+}
+.row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.88rem;
+}
+.row:last-child { border-bottom: none; }
+.row .label { color: var(--text-muted); }
+.row .value { font-weight: 600; color: var(--text-main); }
+.row a { color: var(--green-main); text-decoration: none; }
+.row a:hover { text-decoration: underline; }
+.no-results {
+  text-align: center;
+  color: var(--text-muted);
+  margin-top: 40px;
+  font-size: 1.1rem;
+  grid-column: 1/-1;
+}
+.search-section { text-align: center; padding: 40px 20px 20px; }
+.search-section h1 { color: var(--green-main); font-size: 2.5rem; }
+
+
+.picker-title { text-align: center; color: var(--text-muted); font-size: 0.95rem; margin: 24px 0 0; }
+.picker-grid { max-width: 900px; margin: 20px auto 30px; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+.picker-card { background: white; border: 1px solid var(--border); border-radius: 14px; cursor: pointer; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; align-items: center; padding: 20px 16px; gap: 10px; color: var(--text-main); }
+.picker-card:hover { transform: translateY(-4px); box-shadow: 0 10px 24px rgba(0,0,0,0.1); border-color: var(--green-main); }
+.picker-card img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid var(--border); }
+.picker-card .picker-name { font-weight: 700; font-size: 0.95rem; text-align: center; }
+.picker-card .picker-team { font-size: 0.8rem; color: var(--text-muted); text-align: center; }
+.picker-card .picker-nat { font-size: 0.78rem; background: var(--bg-main); border: 1px solid var(--border); border-radius: 20px; padding: 2px 10px; color: var(--green-main); font-weight: 600; }
+.single-result { max-width: 420px; margin: 30px auto; padding: 0 20px; }
+</style>
+
+</head>
+<body>
+  
+    <nav class="navbar">
+  <div class="nav-left">
+<span class="logo"><a href="/"><img src="/static/logo2-Photoroom.png" alt="Logo" class="png">Football Project</a></span>
+    
+  </div>
+  <div class="nav-search">
+    
+  </div>
+  <div class="nav-right">
+    <a href="/leagues">leagues</a>
+    <a href="/players">Players</a>
+    <a href="#">Competitions</a>
+    <a href="/match">matches</a>
+    <a href="/standings">standings</a>
+  </div>
+</nav>
+  <div class="search-section">
+  <h1>Player Search</h1>
+  <form method="get" action="/players">
+  <div class="search-box">
+    <input type="text" name="p" id="searchInput" placeholder="Search for a player..." value="{{ query or '' }}">
+    <button type="submit">Search</button>
+  </div>
+  </form>
+</div>
+
+
+{% macro player_card(p) %}
+<div class="player-card">
+  <div class="player-card-header">
+    <img src="{{ p.strThumb or '/static/placeholder.png' }}" onerror="this.src='/static/placeholder.png'">
+    <div class="info">
+      <div class="name">{{ p.strPlayer }}</div>
+      <div class="team">{{ p.strTeam or 'Unknown Club' }}</div>
+    </div>
+  </div>
+  <div class="player-card-body">
+    <div class="section-title">Personal</div>
+    {% if p.strPosition %}<div class="row"><span class="label">Position</span><span class="value">{{ p.strPosition }}</span></div>{% endif %}
+    {% if p.strSide %}<div class="row"><span class="label">Preferred Foot</span><span class="value">{{ p.strSide }}</span></div>{% endif %}
+    {% if p.strNationality %}<div class="row"><span class="label">Nationality</span><span class="value">{{ p.strNationality }}</span></div>{% endif %}
+    {% if p.strEthnicity %}<div class="row"><span class="label">Ethnicity</span><span class="value">{{ p.strEthnicity }}</span></div>{% endif %}
+    {% if p.dateBorn %}<div class="row"><span class="label">Date of Birth</span><span class="value">{{ p.dateBorn }}</span></div>{% endif %}
+    {% if p.strBirthLocation %}<div class="row"><span class="label">Birth Place</span><span class="value">{{ p.strBirthLocation }}</span></div>{% endif %}
+    {% if p.strHeight %}<div class="row"><span class="label">Height</span><span class="value">{{ p.strHeight }}</span></div>{% endif %}
+    {% if p.strWeight %}<div class="row"><span class="label">Weight</span><span class="value">{{ p.strWeight }}</span></div>{% endif %}
+    {% if p.strStatus %}<div class="row"><span class="label">Status</span><span class="value">{{ p.strStatus }}</span></div>{% endif %}
+    <div class="section-title">Club</div>
+    {% if p.strTeam %}<div class="row"><span class="label">Club</span><span class="value">{{ p.strTeam }}</span></div>{% endif %}
+    {% if p.strTeam2 %}<div class="row"><span class="label">National Team</span><span class="value">{{ p.strTeam2 }}</span></div>{% endif %}
+    {% if p.dateSigned %}<div class="row"><span class="label">Signed</span><span class="value">{{ p.dateSigned }}</span></div>{% endif %}
+    {% if p.strSigning %}<div class="row"><span class="label">Transfer Fee</span><span class="value">{{ p.strSigning }}</span></div>{% endif %}
+    {% if p.strWage %}<div class="row"><span class="label">Wage</span><span class="value">{{ p.strWage }}</span></div>{% endif %}
+    {% if p.strOutfitter %}<div class="row"><span class="label">Kit Sponsor</span><span class="value">{{ p.strOutfitter }}</span></div>{% endif %}
+    {% if p.strAgent %}<div class="row"><span class="label">Agent</span><span class="value">{{ p.strAgent }}</span></div>{% endif %}
+    {% if p.strFacebook or p.strInstagram or p.strTwitter or p.strYoutube or p.strWebsite %}
+    <div class="section-title">Social</div>
+    {% if p.strFacebook %}<div class="row"><span class="label">Facebook</span><span class="value"><a href="https://{{ p.strFacebook }}" target="_blank">Profile</a></span></div>{% endif %}
+    {% if p.strInstagram %}<div class="row"><span class="label">Instagram</span><span class="value"><a href="https://{{ p.strInstagram }}" target="_blank">Profile</a></span></div>{% endif %}
+    {% if p.strTwitter %}<div class="row"><span class="label">Twitter</span><span class="value"><a href="https://{{ p.strTwitter }}" target="_blank">Profile</a></span></div>{% endif %}
+    {% if p.strYoutube %}<div class="row"><span class="label">Youtube</span><span class="value"><a href="https://{{ p.strYoutube }}" target="_blank">Channel</a></span></div>{% endif %}
+    {% if p.strWebsite %}<div class="row"><span class="label">Website</span><span class="value"><a href="{{ p.strWebsite }}" target="_blank">Visit</a></span></div>{% endif %}
+    {% endif %}
+    {% if p.strDescriptionEN %}
+    <div class="section-title">About</div>
+    <div style="padding:10px 0;font-size:0.85rem;color:var(--text-muted);line-height:1.6;">
+      {{ p.strDescriptionEN[:400] }}{% if p.strDescriptionEN|length > 400 %}...{% endif %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endmacro %}
+
+{% if selected_player %}
+  <div class="single-result">{{ player_card(selected_player) }}</div>
+{% elif multiple %}
+  <p class="picker-title">Multiple results for "<strong>{{ query }}</strong>" — pick one:</p>
+  <div class="picker-grid">
+    {% for p in players %}
+    <a class="picker-card" href="/players?p={{ query }}&id={{ p.idPlayer }}">
+      <img src="{{ p.strThumb or '/static/placeholder.png' }}" onerror="this.src='/static/placeholder.png'">
+      <div class="picker-name">{{ p.strPlayer }}</div>
+      {% if p.strTeam %}<div class="picker-team">{{ p.strTeam }}</div>{% endif %}
+      {% if p.strNationality %}<div class="picker-nat">{{ p.strNationality }}</div>{% endif %}
+    </a>
+    {% endfor %}
+  </div>
+{% elif query %}
+  <p class="no-results">No players found for "{{ query }}".</p>
+{% endif %}
+    
+
+<script>
+  document.getElementById("searchInput").addEventListener("keydown", function(e) {
+  if (e.key === "Enter") this.form.submit();
+});
+
+
+</script>
+</body>
+</html>

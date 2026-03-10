@@ -199,14 +199,20 @@ form {
     <a href="/leagues">leagues</a>
     <a href="#">Players</a>
     <a href="#">Competitions</a>
-    <a href="/matches">matches</a>
+    <a href="/match">matches</a>
     <a href="/standings">standings</a>
   </div>
 </nav>
     <h1>Football matches</h1>
     <form method="get" action="/match">
     <input type="date" name="date" class="date">
-  
+  <select name="league" class="league">
+    <option value="PL">Premier League</option>
+    <option value="PD">La Liga</option>
+    <option value="SA">Serie A</option>
+    <option value="BL1">Bundesliga</option>
+    <option value="FL1">Ligue 1</option>
+  </select>
 
   
 
@@ -220,8 +226,6 @@ form {
     <th>Away</th>
   </tr>
 
-  {% for competition, matches in grouped_matches.items() %}
-  <tr><td colspan="3"><strong>{{ competition }}</strong></td></tr>
   {% for match in matches %}
   <tr>
     <td>
@@ -233,7 +237,7 @@ form {
     </a>
     </td>
     
-    <td class="score"><a href="/match/{{ match.id }}" style="color: var(--green-main); text-decoration: none;">{{ match.score }}</a></td>
+    <td class="score">{{ match.score }}</td>
 
     <td>
     <a href="/club/{{ match.away_id }}" class="team-link">
@@ -244,7 +248,6 @@ form {
     </a>
     </td>
   </tr>
-    {% endfor %}
   {% endfor %}
 </table>
     

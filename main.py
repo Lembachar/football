@@ -1,10 +1,11 @@
+from itertools import groupby
+
 from flask import Flask, render_template, request
 from datetime import date
 
 import requests
 import os
 from dotenv import load_dotenv
-
 load_dotenv()
 
 
@@ -18,21 +19,20 @@ def interface():
 
 
 #matches page
-# --- DELETE THE GLOBAL HEADERS VARIABLE AT THE TOP ---
+
 
 @app.route("/match")
 def matches():
-    # Fetch key inside the function to ensure Railway has loaded it
     api_key = os.environ.get("FOOTBALL_API_KEY")
     if not api_key:
-        raise RuntimeError("FOOTBALL_API_KEY not set")
+        return "API key not set", 500
+
     headers = {"X-Auth-Token": api_key}
-    
 
-    league = request.args.get("league", "PL")
-    status = request.args.get("status")
+    # Major competitions (free-plan safe)
+    LEAGUES = ["PL", "PD", "SA", "BL1", "FL1", "CL"]
+
     selected_date = request.args.get("date")
-
     if selected_date:
         date_from = selected_date
         date_to = selected_date
@@ -41,37 +41,88 @@ def matches():
         date_from = today
         date_to = today
 
-    params = {"dateFrom": date_from, "dateTo": date_to}
-    if status:
-        params["status"] = status
+    all_matches = []
 
-    url = f"https://api.football-data.org/v4/competitions/{league}/matches"
-    
-    # Use current_headers here
-    response = requests.get(url, headers=headers, params=params, timeout=10)
-    data = response.json()
+    for league in LEAGUES:
+        url = f"https://api.football-data.org/v4/competitions/{league}/matches"
+        params = {
+            "dateFrom": date_from,
+            "dateTo": date_to
+        }
 
-    # DEBUG: This will show the actual API error in Railway "Application Logs"
-    if response.status_code != 200:
-        print(f"MATCH API ERROR: {data}")
+        res = requests.get(url, headers=headers, params=params, timeout=10)
+        if res.status_code != 200:
+            continue
 
-    matches = []
-    for game in data.get("matches", []):
-        score = "vs"
-        if game["score"]["fullTime"]["home"] is not None:
-            score = f'{game["score"]["fullTime"]["home"]} - {game["score"]["fullTime"]["away"]}'
+        for game in res.json().get("matches", []):
+            ft = game.get("score", {}).get("fullTime")
+            score = "vs"
+            if ft and ft.get("home") is not None:
+                score = f"{ft['home']} - {ft['away']}"
 
-        matches.append({
-             "home": game["homeTeam"]["name"],
-             "home_id": game["homeTeam"]["id"],
-             "home_logo": game["homeTeam"].get("crest"),
-             "away": game["awayTeam"]["name"],
-             "away_id": game["awayTeam"]["id"],
-             "away_logo": game["awayTeam"].get("crest"),
-             "score": score
-        })
-        
-    return render_template("match.html", matches=matches)
+            all_matches.append({
+                "id": game.get("id"),
+                "competition": game.get("competition", {}).get("name"),
+                "competition_code": league,
+                "utcDate": game.get("utcDate"),
+                "home": game.get("homeTeam", {}).get("name"),
+                "home_id": game.get("homeTeam", {}).get("id"),
+                "home_logo": game.get("homeTeam", {}).get("crest"),
+                "away": game.get("awayTeam", {}).get("name"),
+                "away_id": game.get("awayTeam", {}).get("id"),
+                "away_logo": game.get("awayTeam", {}).get("crest"),
+                "score": score
+            })
+
+    # Sort by kickoff time
+    all_matches.sort(key=lambda x: x.get("utcDate", ""))
+    from itertools import groupby
+    grouped = {k: list(v) for k, v in groupby(all_matches, key=lambda x: x["competition"])}
+
+    NAME_MAP = {
+        "Primera Division": "La Liga",
+    }
+    grouped = {NAME_MAP.get(k, k): v for k, v in grouped.items()}
+    return render_template(
+        "match.html",
+        grouped_matches=grouped,
+        selected_date=date_from
+    )
+
+
+
+@app.route("/match/<int:match_id>")
+def match_detail(match_id):
+    api_key = os.environ.get("FOOTBALL_API_KEY")
+    if not api_key:
+        return "API key not set", 500
+    headers = {"X-Auth-Token": api_key}
+
+    res = requests.get(f"https://api.football-data.org/v4/matches/{match_id}", headers=headers)
+    if res.status_code != 200:
+        return "Match not found", 404
+
+    data = res.json()
+
+    match = {
+        "home": data.get("homeTeam", {}).get("name"),
+        "home_logo": data.get("homeTeam", {}).get("crest"),
+        "away": data.get("awayTeam", {}).get("name"),
+        "away_logo": data.get("awayTeam", {}).get("crest"),
+        "score": data.get("score", {}).get("fullTime", {}),
+        "status": data.get("status"),
+        "date": data.get("utcDate", "").split("T")[0],
+        "competition": data.get("competition", {}).get("name"),
+        "goals": data.get("goals", []),
+        "bookings": data.get("bookings", []),
+        "substitutions": data.get("substitutions", []),
+        "lineups": data.get("lineups", []),
+    }
+
+    return render_template("data.html", match=match)
+
+
+
 
 #club -----------------------------------------------------------------
 @app.route("/club/<int:team_id>")
@@ -101,7 +152,8 @@ def club(team_id):
         "stadium": data.get("venue"),
         "founded": data.get("founded"),
         "country": data.get("area", {}).get("name"),
-        "running_competitions": data.get("runningCompetitions", [])
+        "running_competitions": data.get("runningCompetitions", []),
+         "squad": data.get("squad", [])
     }
 
     # --- matches ---
@@ -196,7 +248,70 @@ def standings():
         club={}
     )
 
-    
+@app.route("/leagues")
+def leagues():
+    api_key = os.environ.get("FOOTBALL_API_KEY")
+    if not api_key:
+        raise RuntimeError("FOOTBALL_API_KEY not set")
+    headers = {"X-Auth-Token": api_key}
+
+    url = "https://api.football-data.org/v4/competitions"
+    response = requests.get(url, headers=headers)
+    data = response.json()
+
+    leagues = []
+    for comp in data.get("competitions", []):
+        if comp.get("plan") == "TIER_ONE":
+            leagues.append({
+                "id": comp.get("id"),
+                "name": comp.get("name"),
+                "code": comp.get("code"),
+                "area": comp.get("area", {}).get("name")
+            })
+
+    return render_template("leagues.html", leagues=leagues)
+
+
+
+
+
+
+@app.route("/players")
+def players():
+    query = request.args.get("p", "")
+    player_id = request.args.get("id", "")
+    players = []
+    selected_player = None
+    multiple = False
+
+    if query:
+        sportsdb_key = os.environ.get("SPORTSDB_API_KEY")
+        try:
+            res = requests.get(f"https://www.thesportsdb.com/api/v1/json/{sportsdb_key}/searchplayers.php?p={query}")
+            results = res.json().get("player", []) or []
+            if player_id:
+               if player_id:
+                    detail = requests.get(f"https://www.thesportsdb.com/api/v1/json/{sportsdb_key}/lookupplayer.php?id={player_id}")
+                    players_data = detail.json().get("players", [])
+                    selected_player = players_data[0] if players_data else None
+            elif len(results) == 1:
+                selected_player = results[0]
+            elif len(results) > 1:
+                players = results
+                multiple = True
+        except:
+            pass
+
+    return render_template("players.html", players=players, selected_player=selected_player, multiple=multiple, query=query, player_id=player_id)
+
+
+
+
+
+
+
+
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))

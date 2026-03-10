@@ -142,10 +142,10 @@ transition: transform 0.2s ease, opacity 0.2s ease;
   </div>
 
   <div class="nav-right">
-    <a href="/match">Matches</a>
+    <a href="/leagues">leagues</a>
     <a href="#">Players</a>
     <a href="#">Competitions</a>
-    <a href="#">leagues</a>
+    <a href="/match">matches</a>
     <a href="/standings">standings</a>
   </div>
 </nav>
@@ -220,6 +220,25 @@ transition: transform 0.2s ease, opacity 0.2s ease;
 
   <div class="section">
     <h2>Players</h2>
+
+     {% if club.squad %}
+  <table style="width:100%; border-collapse: collapse;">
+    <tr>
+      <th style="text-align:left; padding: 8px; border-bottom: 2px solid var(--border); color: var(--green-main);">Name</th>
+      <th style="text-align:left; padding: 8px; border-bottom: 2px solid var(--border); color: var(--green-main);">Position</th>
+      <th style="text-align:left; padding: 8px; border-bottom: 2px solid var(--border); color: var(--green-main);">Nationality</th>
+    </tr>
+    {% for player in club.squad %}
+    <tr style="border-bottom: 1px solid var(--border);">
+      <td style="padding: 8px;">{{ player.name }}</td>
+      <td style="padding: 8px;">{{ player.position }}</td>
+      <td style="padding: 8px;">{{ player.nationality }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <p>Squad data not available.</p>
+  {% endif %}
     </div>
 
 </body>

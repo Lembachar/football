@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Match Detail</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+:root {
+  --bg-main: #f6fbf8;
+  --green-main: #1f7a3f;
+  --green-hover: #166534;
+  --text-main: #1f7a3f;
+  --text-muted: #5f7d6b;
+  --border: #cfe8d8;
+  --white: #ffffff;
+}
+body {
+  background: var(--bg-main);
+  color: var(--text-main);
+  margin: 0;
+}
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 24px;
+  background: var(--green-main);
+  color: var(--white);
+}
+.navbar a {
+  color: var(--white);
+  text-decoration: none;
+  margin-left: 20px;
+  font-weight: 500;
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+.navbar a:hover {
+  transform: scale(1.08) translateY(-2px);
+}
+.logo {
+  font-size: 18px;
+  font-weight: bold;
+}
+.section {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 24px;
+  background: white;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+}
+h2 {
+  color: var(--green-main);
+  margin-bottom: 12px;
+}
+
+/* Score header */
+.match-header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  text-align: center;
+  padding: 30px;
+  background: linear-gradient(135deg, #1f7a3f, #2fa866);
+  color: white;
+}
+.match-header img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+.match-header .team-name {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-top: 8px;
+}
+.match-header .score-box {
+  font-size: 3rem;
+  font-weight: 800;
+  padding: 0 30px;
+}
+.match-header .meta {
+  font-size: 0.85rem;
+  opacity: 0.8;
+  margin-top: 6px;
+}
+
+/* Goals */
+.goal-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.95rem;
+}
+
+/* Lineups */
+.lineups {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.lineup-team h3 {
+  color: var(--green-main);
+  margin-bottom: 8px;
+}
+.lineup-team ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.lineup-team ul li {
+  padding: 5px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-left">
+    <span class="logo"><a href="/">Football Project</a></span>
+  </div>
+  <div class="nav-right">
+    <a href="/leagues">leagues</a>
+    <a href="#">Players</a>
+    <a href="#">Competitions</a>
+    <a href="/match">matches</a>
+    <a href="/standings">standings</a>
+  </div>
+</nav>
+
+<!-- Score Header -->
+<div class="match-header">
+  <div>
+    <img src="{{ match.home_logo }}" alt="">
+    <div class="team-name">{{ match.home }}</div>
+  </div>
+  <div>
+    <div class="score-box">{{ match.score.home }} - {{ match.score.away }}</div>
+    <div class="meta">{{ match.competition }} · {{ match.date }}</div>
+    <div class="meta">{{ match.status }}</div>
+  </div>
+  <div>
+    <img src="{{ match.away_logo }}" alt="">
+    <div class="team-name">{{ match.away }}</div>
+  </div>
+</div>
+
+<!-- Goals -->
+<div class="section">
+  <h2>Goals</h2>
+  {% if match.goals %}
+    {% for goal in match.goals %}
+    <div class="goal-row">
+      <span>{{ goal.scorer.name if goal.scorer else '?' }}</span>
+      <span>{{ goal.minute }}'</span>
+      <span>{{ goal.team.name if goal.team else '' }}</span>
+    </div>
+    {% endfor %}
+  {% else %}
+    <p>No goals data available.</p>
+  {% endif %}
+</div>
+
+<!-- Lineups -->
+<div class="section">
+  <h2>Lineups</h2>
+  {% if match.lineups and match.lineups|length == 2 %}
+  <div class="lineups">
+    {% for team in match.lineups %}
+    <div class="lineup-team">
+      <h3>{{ team.team.name }}</h3>
+      <ul>
+        {% for player in team.startXI %}
+        <li>{{ player.player.name }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+    <p>Lineup data not available.</p>
+  {% endif %}
+</div>
+
+<!-- Bookings -->
+<div class="section">
+  <h2>Bookings</h2>
+  {% if match.bookings %}
+    {% for b in match.bookings %}
+    <div class="goal-row">
+      <span>{{ b.player.name if b.player else '?' }}</span>
+      <span>{{ b.minute }}'</span>
+      <span>{{ b.card }}</span>
+    </div>
+    {% endfor %}
+  {% else %}
+    <p>No bookings.</p>
+  {% endif %}
+</div>
+
+</body>
+</html>
